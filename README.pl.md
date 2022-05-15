@@ -25,13 +25,15 @@ zapoznania się z ustawieniami dodatkowych opcji
 
 ## Deployment
 
-Aby skonfigurować wdrożenie projektu, należy wykonać kilka dodatkowych kroków
-w celu skonfigurowania repozytorium. Przejdź do zakładki `Settings` i w podsekcji
+Aby skonfigurować wdrożenie projektu, należy wykonać kilka dodatkowych kroków w
+celu skonfigurowania repozytorium. Przejdź do zakładki `Settings` i w podsekcji
 `Actions` wybierz wybierz pozycję `General`.
 
 ![GitHub actions settings](./assets/actions-config-step-1.png)
 
-Przewiń stronę w dół do ostatniej sekcji, a następnie wybierz opcje tak jak pokazano poniżej i kliknij `Save`. Bez tych ustawień zespół nie będzie miał uprawnień, aby zautomatyzować proces wdrażania.
+Przewiń stronę w dół do ostatniej sekcji, a następnie wybierz opcje tak jak
+pokazano poniżej i kliknij `Save`. Bez tych ustawień zespół nie będzie miał
+uprawnień, aby zautomatyzować proces wdrażania.
 
 ![GitHub actions settings](./assets/actions-config-step-2.png)
 
@@ -57,10 +59,10 @@ jeśli nie zostało to wykonane automatycznie.
 Status deploymentu ostatniego commitu wyświetla się jako ikona obok jego
 identyfikatora.
 
-- **Żółty kolor** - wykonuje się zbudowanie i deployment projektu.
-- **Zielony kolor** - deploymnt zakończył się sukcesem.
-- **Czerwony kolor** - podczas pracy lintera, budowania lub deploymentu wystąpił
-  błąd.
+-   **Żółty kolor** - wykonuje się zbudowanie i deployment projektu.
+-   **Zielony kolor** - deploymnt zakończył się sukcesem.
+-   **Czerwony kolor** - podczas pracy lintera, budowania lub deploymentu
+    wystąpił błąd.
 
 Bardziej szczegółowe informacje o statusie można zobaczyć po kliknięciu na
 ikonkę i przejściu w wyskakującym oknie do odnośnika `Details`.
@@ -89,7 +91,7 @@ końcu łańcucha jest obowiązkowy.
 
 ```jsx
 <BrowserRouter basename="/your_repo_name/">
-  <App />
+    <App />
 </BrowserRouter>
 ```
 
