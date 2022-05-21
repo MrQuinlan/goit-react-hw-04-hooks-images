@@ -1,5 +1,5 @@
-import { Component } from 'react';
-import Searchbar from './Searchbar';
+import { useEffect, useState } from 'react';
+import SearchBar from './SearchBar';
 import ImageGallery from './ImageGallery';
 import ImageGalleryItem from './ImageGalleryItem';
 import { ImageApi } from './ImageApi';
@@ -11,115 +11,108 @@ import s from './App.module.css';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-class App extends Component {
-    state = {
-        gallery: [],
-        query: '',
-        page: 1,
-        status: 'idle',
-        bigImg: '',
-        modal: false,
-    };
+const App = () => {
+    const [gallery, setGallery] = useState([]);
+    const [query, setQuery] = useState('');
+    const [page, setPage] = useState(1);
+    const [status, setStatus] = useState('idle');
+    const [bigImg, setBigImg] = useState('');
+    const [modal, setModal] = useState(false);
 
-    componentDidUpdate(prevProps, prevState) {
-        if (this.state.query === '') {
+    useEffect(() => {
+        if (query === '') {
             return;
         }
 
-        if (prevState.query !== this.state.query) {
-            const { query, page } = this.state;
+        ImageApi(query, page)
+            .then(res => {
+                setStatus('pending');
 
-            ImageApi(query, page)
-                .then(res => {
-                    this.setState({ status: 'pending' });
+                return res.json();
+            })
+            .then(res => {
+                if (res.total > 0) {
+                    setGallery(res.hits);
+                    // setPage(1);
+                    setStatus('resolved');
 
-                    return res.json();
-                })
-                .then(res => {
-                    if (res.total > 0) {
-                        return this.setState({
-                            gallery: res.hits,
-                            page: 1,
-                            status: 'resolved',
-                        });
-                    }
+                    return;
+                }
 
-                    this.setState({
-                        status: 'error',
-                    });
+                setStatus('error');
 
-                    toast.error('Please enter a valid search query');
-                });
-        }
+                toast.error('Please enter a valid search query');
+            });
+    }, [query]);
 
-        if (prevState.page !== this.state.page && this.state.page !== 1) {
-            const { query, page } = this.state;
-
-            ImageApi(query, page)
-                .then(res => {
-                    this.setState({ status: 'pending' });
-
-                    return res.json();
-                })
-                .then(res => {
-                    this.setState({
-                        gallery: [...prevState.gallery, ...res.hits],
-                        status: 'resolved',
-                    });
-                });
-        }
-    }
-
-    onSubmit = val => {
-        if (this.state.query === val) {
+    useEffect(() => {
+        if (page === 1) {
             return;
         }
 
-        this.setState({ query: val, page: 1, gallery: [], status: 'pending' });
+        ImageApi(query, page)
+            .then(res => {
+                setStatus('pending');
+
+                return res.json();
+            })
+            .then(res => {
+                setGallery([...gallery, ...res.hits]);
+
+                setStatus('resolved');
+            });
+    }, [page]);
+
+    const onSubmit = val => {
+        if (val === '') {
+            return;
+        }
+
+        if (query === val) {
+            return;
+        }
+
+        setQuery(val);
+        setPage(1);
+        setGallery([]);
+        setStatus('pending');
     };
 
-    onIncrementPage = () => {
-        this.setState({ page: this.state.page + 1 });
+    const onIncrementPage = () => {
+        setPage(page + 1);
     };
 
-    getBigImage = img => {
-        this.setState({ bigImg: img });
+    const getBigImage = img => {
+        setBigImg(img);
     };
 
-    toggleModal = () => {
-        this.setState({ modal: !this.state.modal });
+    const toggleModal = () => {
+        setModal(!modal);
     };
 
-    render() {
-        const { gallery, status, modal, bigImg } = this.state;
-
-        return (
-            <div className={s.Container}>
-                <Searchbar onSubmit={this.onSubmit} />
-                {(status === 'resolved' || gallery !== []) && (
-                    <ImageGallery>
-                        <ImageGalleryItem
-                            gallery={gallery}
-                            getBigImage={this.getBigImage}
-                            toggleModal={this.toggleModal}
-                        />
-                    </ImageGallery>
-                )}
-
-                {status === 'resolved' && gallery.length >= 12 && (
-                    <Button
-                        title={'Load more'}
-                        onIncrementPage={this.onIncrementPage}
+    return (
+        <div className={s.Container}>
+            <SearchBar onSubmit={onSubmit} />
+            {(status === 'resolved' || gallery !== []) && (
+                <ImageGallery>
+                    <ImageGalleryItem
+                        gallery={gallery}
+                        getBigImage={getBigImage}
+                        toggleModal={toggleModal}
                     />
-                )}
-                {status === 'pending' && <Loader />}
-                {status === 'error' && (
-                    <ToastContainer position="top-center" autoClose={3000} />
-                )}
-                {modal && <Modal img={bigImg} toggleModal={this.toggleModal} />}
-            </div>
-        );
-    }
-}
+                </ImageGallery>
+            )}
+
+            {status === 'resolved' && gallery.length >= 12 && (
+                <Button title={'Load more'} onIncrementPage={onIncrementPage} />
+            )}
+            {status === 'pending' && <Loader />}
+            {status === 'error' && (
+                <ToastContainer position="top-center" autoClose={3000} />
+            )}
+            {modal && <Modal img={bigImg} toggleModal={toggleModal} />}
+        </div>
+    );
+};
 
 export { App };

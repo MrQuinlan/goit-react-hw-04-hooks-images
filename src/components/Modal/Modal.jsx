@@ -1,41 +1,39 @@
 import PropTypes from 'prop-types';
-import { Component } from 'react';
+import { useEffect } from 'react';
 import s from './Modal.module.css';
 
-class Modal extends Component {
-    img = this.props.img.webformatURL;
-    tags = this.props.img.tags;
+const Modal = ({ img, toggleModal }) => {
+    const { webformatURL, tags } = img;
 
-    componentDidMount() {
-        window.addEventListener('keydown', this.handleEscKey);
-    }
+    useEffect(() => {
+        window.addEventListener('keydown', handleEscKey);
 
-    componentWillUnmount() {
-        window.removeEventListener('keydown', this.handleEscKey);
-    }
+        return () => {
+            window.removeEventListener('keydown', handleEscKey);
+        };
+    }, []);
 
-    handleClick = e => {
+    function handleClick(e) {
         if (e.target === e.currentTarget) {
-            this.props.toggleModal();
+            toggleModal();
         }
-    };
-
-    handleEscKey = e => {
-        if (e.code === 'Escape') {
-            this.props.toggleModal();
-        }
-    };
-
-    render() {
-        return (
-            <div className={s.Overlay} onClick={this.handleClick}>
-                <div className={s.Modal}>
-                    <img src={this.img} alt={this.tags} />
-                </div>
-            </div>
-        );
     }
-}
+
+    const handleEscKey = e => {
+        if (e.code === 'Escape') {
+            toggleModal();
+        }
+    };
+
+    return (
+        <div className={s.Overlay} onClick={handleClick}>
+            <div className={s.Modal}>
+                <img src={webformatURL} alt={tags} />
+            </div>
+        </div>
+    );
+};
+
 export default Modal;
 
 Modal.propTypes = {
