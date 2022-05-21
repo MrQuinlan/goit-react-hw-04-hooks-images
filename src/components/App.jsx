@@ -43,6 +43,7 @@ const App = () => {
 
                 toast.error('Please enter a valid search query');
             });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [query]);
 
     useEffect(() => {
@@ -61,9 +62,10 @@ const App = () => {
 
                 setStatus('resolved');
             });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [page]);
 
-    const onSubmit = val => {
+    function onSubmit(val) {
         if (val === '') {
             return;
         }
@@ -76,7 +78,7 @@ const App = () => {
         setPage(1);
         setGallery([]);
         setStatus('pending');
-    };
+    }
 
     const onIncrementPage = () => {
         setPage(page + 1);

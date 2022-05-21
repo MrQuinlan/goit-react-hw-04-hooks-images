@@ -11,13 +11,14 @@ const Modal = ({ img, toggleModal }) => {
         return () => {
             window.removeEventListener('keydown', handleEscKey);
         };
-    });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
-    const handleClick = e => {
+    function handleClick(e) {
         if (e.target === e.currentTarget) {
             toggleModal();
         }
-    };
+    }
 
     const handleEscKey = e => {
         if (e.code === 'Escape') {
