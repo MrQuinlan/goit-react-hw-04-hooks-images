@@ -11,13 +11,13 @@ const Modal = ({ img, toggleModal }) => {
         return () => {
             window.removeEventListener('keydown', handleEscKey);
         };
-    }, []);
+    });
 
-    function handleClick(e) {
+    const handleClick = e => {
         if (e.target === e.currentTarget) {
             toggleModal();
         }
-    }
+    };
 
     const handleEscKey = e => {
         if (e.code === 'Escape') {
